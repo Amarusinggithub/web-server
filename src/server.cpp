@@ -1,7 +1,7 @@
-#include <tcp_server.h>
+#include <../include/tcp_server.h>
 
 int main(int argc, char* argv[]){
     using namespace http;
-    TcpServer server=TcpServer(8080,"0.0.0.0");
+    TcpServer server=TcpServer(6969,"0.0.0.0");
     return 0;
 }

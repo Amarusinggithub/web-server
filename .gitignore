@@ -1,3 +1,4 @@
 .vscode
 build
 CMakePresets.json
+cmake-build-debug

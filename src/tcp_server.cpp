@@ -1,4 +1,4 @@
-#include "tcp_server.h"
+#include "../include/tcp_server.h"
 
 #include <iostream>
 #include <sstream>
@@ -40,24 +40,26 @@ int TcpServer::startServer() {
     }
 
     startListening();
-    startAccepting(m_new_socket);
+    startAccepting();
     return 0;
 }
 
 
 
-int TcpServer::startAccepting(SOCKET& m_new_socket) {
+int TcpServer::startAccepting() {
+
     m_new_socket = accept(m_socket, (sockaddr*)&m_socketAddress, &m_socketAddress_len);
 
     if (m_new_socket == INVALID_SOCKET) {
         wprintf(L"accept failed with error: %ld\n", WSAGetLastError());
         return 1;
     }
+
     readRequestBytes();
     return 0;
 }
 
-void TcpServer::startListening() {
+void TcpServer::startListening() const {
     if (listen(m_socket, 20) != 0) {
         printf("Failed to listen on socket");
     }
@@ -76,13 +78,12 @@ void TcpServer::readRequestBytes() {
 
 void TcpServer::sendAResponse() {
     long totalByteSent=0;
-    int byteSent;
 
-    while (totalByteSent < m_server_message.size()) {
-        m_server_message="Hello World";
-        byteSent = send(m_new_socket, m_server_message.c_str(), m_server_message.size(), 0);
+    while (true) {
+        m_server_message="HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello, World!";
+        int byteSent = send(m_new_socket, m_server_message.c_str(), m_server_message.size(), 0);
         if (byteSent > 0) {
-            printf("this is the byte size sent ", byteSent);
+            printf("this is the byte size sent ");
             break;
         }
 
@@ -90,17 +91,17 @@ void TcpServer::sendAResponse() {
     }
 
     if (totalByteSent == m_server_message.size()) {
-        printf("server message was sent");
+        printf("server message was sent", m_server_message );
     } else {
         printf("Failed to send server message");
     }
 }
 
-void TcpServer::closeServer() {
+void TcpServer::closeServer() const {
     closesocket(m_socket);
     closesocket(m_new_socket);
     WSACleanup();
-    exit(0);
+    //exit(0);
 }
 
 }
