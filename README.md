@@ -1,4 +1,4 @@
-# HTTP Server in C
+# HTTP Client and Server in C
 
 ## Start Docker Container
 ```sh
